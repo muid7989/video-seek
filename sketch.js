@@ -23,7 +23,7 @@ const JOYSTICK_Y = VIDEO_H*2+GRID_SIZE*1;
 const JOYSTICK_SIZE = GRID_SIZE*2;
 const JOYSTICK_RANGE = CANVAS_W-GRID_SIZE*2;
 
-const REC_SIZE = 150;
+const REC_SIZE = 120;
 let startButton;
 let videoPlayButton;
 let nextButton, prevButton;
@@ -34,6 +34,7 @@ let img;
 let recVideo;
 let recIndex = 0, recViewIndex = 0;
 let recFlag = false;
+let fileInput;
 
 const DEBUG = true;
 const DEBUG_VIEW_X = 40;
@@ -95,6 +96,10 @@ function prevFn() {
 		}
 	}
 }
+function handleFile(file) {
+	video = createVideo(file.data, videoLoaded);
+//	itemImg = loadImage(file.data);
+}
 function setup() {
 //	video.showControls();
 //	video.elt.muted = true;
@@ -112,7 +117,9 @@ function setup() {
 	prevButton = buttonInit('prev', GRID_SIZE*2, GRID_SIZE*1, CANVAS_W-GRID_SIZE*2, GRID_SIZE*13);
 	prevButton.mousePressed(prevFn);
 	textAlign(CENTER,CENTER);
-
+	fileInput = createFileInput(handleFile);
+	fileInput.style('font-size', '32px');
+	fileInput.position(GRID_SIZE/2, CANVAS_H-GRID_SIZE);
 }
 function buttonInit(text, w, h, x, y) {
 	let button = createButton(text);
