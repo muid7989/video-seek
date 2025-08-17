@@ -10,8 +10,9 @@ const GRID_W = 64;
 const GRID_BASE_X = GRID_SIZE*2;
 const GRID_BASE_Y = GRID_SIZE*4;
 
-const BUTTON_W = GRID_SIZE*2;
+const BUTTON_W = GRID_SIZE*1.5;
 const BUTTON_H = BUTTON_W/2;
+const BUTTON_X = CANVAS_W-BUTTON_W;
 const BUTTON_Y = CANVAS_H*2/3;
 const BUTTON_M = 24;
 
@@ -23,9 +24,10 @@ const JOYSTICK_Y = VIDEO_H*2+GRID_SIZE*1;
 const JOYSTICK_SIZE = GRID_SIZE*2;
 const JOYSTICK_RANGE = CANVAS_W-GRID_SIZE*2;
 
-const REC_SIZE = 120;
+const REC_SIZE = 90;
 let startButton;
 let videoPlayButton;
+let fwdButton, backButton;
 let nextButton, prevButton;
 let joystick;
 let video;
@@ -70,6 +72,22 @@ function videoPlayFn() {
 		videoPlay = true;
 	}
 }
+function fwdFn() {
+	if (video!=null){
+		if (video.elt.currentTime+3<video.elt.duration){
+			video.elt.currentTime = video.elt.currentTime+3;
+		}
+	}
+}
+function backFn() {
+	if (video!=null){
+		if (video.elt.currentTime-3>0){
+			video.elt.currentTime = video.elt.currentTime-3;
+		}else{
+			video.elt.currentTime = 0;
+		}
+	}
+}
 function joystickInit() {
 	joystick = {};
 	joystick.pos = {};
@@ -98,23 +116,25 @@ function prevFn() {
 }
 function handleFile(file) {
 	video = createVideo(file.data, videoLoaded);
-//	itemImg = loadImage(file.data);
 }
 function setup() {
-//	video.showControls();
-//	video.elt.muted = true;
+	video.elt.muted = true;
 	createCanvas(CANVAS_W, CANVAS_H);
 	time = millis();
 	joystickInit();
 	rectMode(CENTER);
 
-	startButton = buttonInit('START', BUTTON_W, BUTTON_H, CANVAS_W-GRID_SIZE*2, GRID_SIZE*6);
+	startButton = buttonInit('start', BUTTON_W, BUTTON_H, BUTTON_X, GRID_SIZE*3);
 	startButton.mousePressed(startFn);
-	videoPlayButton = buttonInit('play', GRID_SIZE*2, GRID_SIZE*1, CANVAS_W-GRID_SIZE*2, GRID_SIZE*3);
+	videoPlayButton = buttonInit('play', BUTTON_W, BUTTON_H, BUTTON_X, GRID_SIZE*1);
 	videoPlayButton.mousePressed(videoPlayFn);
-	nextButton = buttonInit('next', GRID_SIZE*2, GRID_SIZE*1, CANVAS_W-GRID_SIZE*2, GRID_SIZE*10);
+	fwdButton = buttonInit('+3sec', BUTTON_W, BUTTON_H, BUTTON_X, GRID_SIZE*5);
+	fwdButton.mousePressed(fwdFn);
+	backButton = buttonInit('-3sec', BUTTON_W, BUTTON_H, BUTTON_X, GRID_SIZE*7);
+	backButton.mousePressed(backFn);
+	nextButton = buttonInit('next', BUTTON_W, BUTTON_H, BUTTON_X, GRID_SIZE*10);
 	nextButton.mousePressed(nextFn);
-	prevButton = buttonInit('prev', GRID_SIZE*2, GRID_SIZE*1, CANVAS_W-GRID_SIZE*2, GRID_SIZE*13);
+	prevButton = buttonInit('prev', BUTTON_W, BUTTON_H, BUTTON_X, GRID_SIZE*12);
 	prevButton.mousePressed(prevFn);
 	textAlign(CENTER,CENTER);
 	fileInput = createFileInput(handleFile);
@@ -163,16 +183,14 @@ function draw() {
 			joystick.x = 0;
 		}
 		joystick.pos.x = JOYSTICK_X+JOYSTICK_RANGE*joystick.x;
-//		joystick.pos.x = JOYSTICK_X;
-//		joystick.pos.y = JOYSTICK_Y;
 	}
-//	joystick.y = -(joystick.pos.y-JOYSTICK_Y)/JOYSTICK_RANGE;
-	img = video.get();
-	image(img, 0, 0);
+//	img = video.get();
+	image(video, 0, 0);
 
 	if(recFlag){
 		if (!video.elt.seeking){
-			recVideo[recIndex] = img;
+//			recVideo[recIndex] = img;
+			recVideo[recIndex] = video.get();
 			recIndex++;
 			if (recIndex>=REC_SIZE){
 				recFlag = false;
