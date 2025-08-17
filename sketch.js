@@ -24,7 +24,7 @@ const JOYSTICK_Y = VIDEO_H*2+GRID_SIZE*1;
 const JOYSTICK_SIZE = GRID_SIZE*2;
 const JOYSTICK_RANGE = CANVAS_W-GRID_SIZE*2;
 
-const REC_SIZE = 90;
+const REC_SIZE = 30;
 let startButton;
 let videoPlayButton;
 let fwdButton, backButton;
